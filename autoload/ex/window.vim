@@ -4,7 +4,7 @@
 " pos: 'left', 'right', 'top', 'bottom'
 " nested: 0 or 1. if nested, the window will be created besides current window 
 
-function ex#window#new( bufname, size, pos, nested )
+function ex#window#new( bufname, size, pos, nested, callback )
     let winpos = ""
     if a:nested == 1
         if a:pos == "left" || a:pos == "top"
@@ -36,7 +36,7 @@ function ex#window#new( bufname, size, pos, nested )
         let bufcmd = a:bufname
     else
         " Edit exists buffer
-        " NOTE: in old exvim script, it wrote +buffer.bufnum, what's the meaning of + here? 
+        " NOTE: '+' here is to make it work with other command 
         let bufcmd = '+b' . bufnum
     endif
 
@@ -62,6 +62,8 @@ function ex#window#new( bufname, size, pos, nested )
     silent setlocal winfixheight
     silent setlocal winfixwidth
 
+    call a:callback()
+
     " TODO: does this should be here or should move it global in ex_utility settings?
     " " Define the ex autocommands
     " augroup ex_auto_cmds
@@ -83,8 +85,9 @@ endfunction
 " pos: 'left', 'right', 'top', 'bottom'
 " nested: 0 or 1. if nested, the window will be created besides current window 
 " focus: 0 or 1. if focus, we will move cursor to opened window
+" callback: init callback when window created
 
-function ex#window#open( bufname, size, pos, nested, focus )
+function ex#window#open( bufname, size, pos, nested, focus, callback )
     " TODO:
     " " close ex_plugin window in same position
     " call exUtility#ClosePluginWindowInSamePosition ( position, nested )
@@ -94,7 +97,7 @@ function ex#window#open( bufname, size, pos, nested, focus )
     " call exUtility#GotoEditBuffer()
 
     " new window
-    call ex#window#new( a:bufname, a:size, a:pos, a:nested )
+    call ex#window#new( a:bufname, a:size, a:pos, a:nested, a:callback )
 
     "
     if a:focus == 0

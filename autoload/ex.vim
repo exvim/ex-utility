@@ -1,17 +1,25 @@
+" ex#hint {{{1
+" msg: string
+function ex#hint(msg)
+    silent echohl ModeMsg
+    echon a:msg
+    silent echohl None
+endfunction
+
 " ex#warning {{{1
 " msg: string
 function ex#warning(msg)
-    echohl WarningMsg
+    silent echohl WarningMsg
     echomsg a:msg
-    echohl None
+    silent echohl None
 endfunction
 
 " ex#error {{{1
 " msg: string
 function ex#error(msg)
-    echohl ErrorMsg
+    silent echohl ErrorMsg
     echomsg 'Error(exVim): ' . a:msg
-    echohl None
+    silent echohl None
 endfunction
 
 " ex#keep_window_bd {{{1
