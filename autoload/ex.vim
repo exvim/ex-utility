@@ -1,7 +1,14 @@
 " msg: string
 function ex#warning(msg)
   echohl WarningMsg
-  echomsg a:msg
+  echomsg 'Warning(exVim): ' . a:msg
+  echohl None
+endfunction
+
+" msg: string
+function ex#error(msg)
+  echohl ErrorMsg
+  echomsg 'Error(exVim): ' . a:msg
   echohl None
 endfunction
 
