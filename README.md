@@ -1,4 +1,4 @@
 exutility
 =========
 
-API, settings used in exvim project
+shared functions, settings used in ex-plugins
