@@ -64,13 +64,6 @@ function ex#window#new( bufname, size, pos, nested, callback )
 
     call a:callback()
 
-    " TODO: does this should be here or should move it global in ex_utility settings?
-    " " Define the ex autocommands
-    " augroup ex_auto_cmds
-    "     autocmd WinLeave * call exUtility#RecordCurrentBufNum()
-    "     autocmd BufLeave * call exUtility#RecordSwapBufInfo()
-    " augroup end
-
     " TODO: do we need this??
     " " avoid cwd change problem
     " if exists( 'g:exES_CWD' )
@@ -145,6 +138,42 @@ function ex#window#resize( winnr, position, nested, size )
     "         let new_size = a:original_size + a:increase_size
     "     endif
     "     silent exe 'resize ' . new_size
+    " endif
+endfunction
+
+" ex#window#record {{{
+
+" function s:getNewWinID () 
+"     let s:ex_last_winID = s:ex_last_winID + 1
+"     return s:ex_last_winID
+" endfunction
+
+" function s:getWinnrFromWinID (winID)
+"     let i = 1
+"     let winNumber = winnr("$")
+"     while i <= winNumber
+"         if getwinvar(i, "ex_winID") == a:winID
+"             return i
+"         endif
+"         let i = i + 1
+"     endwhile
+"     return -1
+" endfunction
+
+" function s:getBufnrFromWinID (winID)
+"     return winbufnr(s:getWinnrFromWinID(winID))
+" endfunction
+
+function ex#window#record()
+    " TODO
+    " let short_bufname = fnamemodify(bufname('%'),":p:t")
+    " if !exUtility#IsRegisteredPluginBuffer(bufname('%'))
+    "     if getwinvar(0, "ex_winID") == ""
+    "         let w:ex_winID = s:getNewWinID()
+    "     endif
+    "     let s:ex_edit_winID = w:ex_winID
+    " else
+    "     let s:ex_pluginbuf_num = bufnr('%')
     " endif
 endfunction
 
