@@ -30,13 +30,16 @@ endif
 command! EXbn call ex#buffer#navigate('bn')
 command! EXbp call ex#buffer#navigate('bp')
 command! EXbalt call ex#buffer#to_alternate_edit_buf()
-command! EXbd call ex#keep_window_bd(1)
+command! EXbd call ex#buffer#keep_window_bd(1)
+
+command! EXwp call ex#window#switch_window()
 " }}}1
 
 " autocmd {{{1
-augroup ex_auto_cmds
-    autocmd VimEnter,WinLeave * call ex#window#record()
-    autocmd BufLeave * call ex#buffer#record()
+augroup ex_utility
+    au!
+    au VimEnter,WinLeave * call ex#window#record()
+    au BufLeave * call ex#buffer#record()
 augroup END
 " }}}1
 

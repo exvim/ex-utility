@@ -148,12 +148,15 @@ endfunction
 " give them winnr by the created time. This is bad for locate window in 
 " the runtime. 
 
-" NOTE: The WinEnter,BufWinEnter event will not invoke when you do it 
-" from script. That's why I don't init w:ex_winid when WinEnter
+" NOTE: The WinEnter,WinLeave, event will not invoke during VimEnter
+" That's why I don't init w:ex_winid when WinEnter
 
-" NOTE: Cause Vim not fire WinEnter event precisely, when you script plugin,
-" It is highly recommend you manually call ex#window#record() when leaving
-" window 
+" NOTE: Cause Vim not fire WinEnter,WinLeave event during VimEnter,
+" When you open window at the starting of Vim, you need to manually invoke
+" the code. You can do this by:
+"       call ex#window#record()
+" or
+"       doautocmd WinLeave 
 
 " What we do is when window leaving, give it a w:ex_winid 
 " that holds a unique id.
@@ -215,9 +218,6 @@ function ex#window#goto_edit_window()
     if winnr != -1 && winnr() != winnr
         exe winnr . 'wincmd w'
     endif
-
-    " TODO: do we need this???
-    " call ex#window#record()
 endfunction
 
 " ex#window#goto_plugin_window {{{
@@ -228,9 +228,15 @@ function ex#window#goto_plugin_window()
     if winnr != -1 && winnr() != winnr
         exe winnr . 'wincmd w'
     endif
+endfunction
 
-    " TODO: do we need this???
-    " call ex#window#record()
+" ex#window#switch_window {{{
+function ex#window#switch_window()
+    if ex#window#is_plugin_window()
+        call ex#window#goto_edit_window()
+    else
+        call ex#window#goto_plugin_window()
+    endif
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
