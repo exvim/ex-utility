@@ -94,7 +94,7 @@ function ex#window#open( bufname, size, pos, nested, focus, callback )
 
     "
     if a:focus == 0
-        " TODO: call exUtility#GotoEditBuffer()
+        call ex#window#goto_edit_window()
     endif
 endfunction
 
@@ -118,7 +118,7 @@ function ex#window#close(winnr)
     endtry
 
     " go back to edit buffer
-    " TODO: call exUtility#GotoEditBuffer()
+    call ex#window#goto_edit_window()
     " TODO: call exUtility#ClearObjectHighlight()
 
 endfunction
@@ -151,6 +151,10 @@ endfunction
 " NOTE: The WinEnter,BufWinEnter event will not invoke when you do it 
 " from script. That's why I don't init w:ex_winid when WinEnter
 
+" NOTE: Cause Vim not fire WinEnter event precisely, when you script plugin,
+" It is highly recommend you manually call ex#window#record() when leaving
+" window 
+
 " What we do is when window leaving, give it a w:ex_winid 
 " that holds a unique id.
 
@@ -164,6 +168,10 @@ function s:new_winid ()
 endfunction
 
 function s:winid2nr (winid)
+    if a:winid == -1
+        return -1
+    endif
+
     let i = 1
     let winnr = winnr("$")
     while i <= winnr
@@ -180,16 +188,49 @@ function ex#window#record()
         let w:ex_winid = s:new_winid()
     endif
 
-    if ex#buffer#is_registered_buffer(bufname('%'))
+    if ex#window#is_plugin_window()
         let s:last_editplugin_bufnr = bufnr('%')
     else
         let s:last_editbuf_winid = w:ex_winid
     endif
 endfunction
 
+" ex#window#is_plugin_window {{{
+function ex#window#is_plugin_window()
+    return ex#buffer#is_registered_buffer(bufname('%'))
+endfunction
+
 " ex#window#last_edit_bufnr {{{
 function ex#window#last_edit_bufnr()
     return winbufnr(s:winid2nr(s:last_editbuf_winid))
 endfunction
+
+" ex#window#goto_edit_window {{{
+function ex#window#goto_edit_window()
+    " get winnr from winid
+    let winnr = s:winid2nr(s:last_editbuf_winid)
+
+    " this will fix the jump error in the vimentry buffer, 
+    " cause the winnr for vimentry buffer is -1
+    if winnr != -1 && winnr() != winnr
+        exe winnr . 'wincmd w'
+    endif
+
+    " TODO: do we need this???
+    " call ex#window#record()
+endfunction
+
+" ex#window#goto_plugin_window {{{
+function ex#window#goto_plugin_window() " <<<
+    " get winnr from bufnr
+    let winnr = bufwinnr(s:last_editplugin_bufnr)
+
+    if winnr != -1 && winnr() != winnr
+        exe winnr . 'wincmd w'
+    endif
+
+    " TODO: do we need this???
+    " call ex#window#record()
+endfunction " >>>
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:

@@ -2,13 +2,11 @@
 " ex#buffer#navigate {{{2
 " the cmd must be 'bn', 'bp', ....
 function ex#buffer#navigate(cmd)
-    " TODO:
-    " " if this is a registered plugin buffer, then go to the edit buffer first 
-    " if exUtility#IsRegisteredPluginBuffer(bufname('%')) 
-    "     call exUtility#GotoEditBuffer()
-    " endif
+    " if we are in plugin window, go back to edit window
+    if ex#window#is_plugin_window()
+        call ex#window#goto_edit_window()
+    endif
 
-    " 
     silent exec a:cmd."!"
 endfunction
 
@@ -88,7 +86,7 @@ endfunction
 " ex#buffer#swap_to_last_edit_buffer() {{{2
 function ex#buffer#swap_to_last_edit_buffer() " <<<
     " check if current buffer can use swap
-    if ex#buffer#is_registered_buffer(bufname('%'))
+    if ex#window#is_plugin_window()
         call ex#warning('Swap buffer in plugin window is not allowed!')
         return
     endif

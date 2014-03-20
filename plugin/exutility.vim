@@ -11,7 +11,6 @@ if !exists('g:ex_registered_plugin')
     let g:ex_registered_plugin = {
                 \ 'explugin': [],
                 \ 'exproject': [], 
-                \ 'vimentry': [],
                 \ 'minibufexpl': [ { 'bufname': '-MiniBufExplorer-', 'buftype': 'nofile' } ], 
                 \ 'taglist': [ { 'bufname': '__Tag_List__', 'buftype': 'nofile' } ],
                 \ 'tagbar': [ { 'bufname': '__TagBar__', 'buftype': 'nofile' } ],
@@ -34,7 +33,7 @@ command! EXbp call ex#buffer#navigate('bp')
 
 " autocmd {{{1
 augroup ex_auto_cmds
-    autocmd WinLeave * call ex#window#record()
+    autocmd VimEnter,WinLeave * call ex#window#record()
     autocmd BufLeave * call ex#buffer#record()
 augroup END
 " }}}1
