@@ -29,6 +29,8 @@ endif
 " commands {{{1
 command! EXbn call ex#buffer#navigate('bn')
 command! EXbp call ex#buffer#navigate('bp')
+command! EXbalt call ex#buffer#to_alternate_edit_buf()
+command! EXbd call ex#keep_window_bd(1)
 " }}}1
 
 " autocmd {{{1

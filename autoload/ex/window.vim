@@ -221,7 +221,7 @@ function ex#window#goto_edit_window()
 endfunction
 
 " ex#window#goto_plugin_window {{{
-function ex#window#goto_plugin_window() " <<<
+function ex#window#goto_plugin_window()
     " get winnr from bufnr
     let winnr = bufwinnr(s:last_editplugin_bufnr)
 
@@ -231,6 +231,6 @@ function ex#window#goto_plugin_window() " <<<
 
     " TODO: do we need this???
     " call ex#window#record()
-endfunction " >>>
+endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:

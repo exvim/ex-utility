@@ -44,13 +44,11 @@ function ex#buffer#is_registered_buffer ( bufname ) " <<<
         for [key, value] in items(ruledict) 
             if key ==# "bufname"
                 if match( a:bufname, value ) == -1
-                    echomsg ( 'bufname = ' . a:bufname . " value = " . value )
                     let failed = 1
                 endif
             else
                 let bufoption = getbufvar( bufnr, '&'.key )
                 if bufoption !=# value 
-                    echomsg ( 'bufoption = ' . bufoption . " value = " . value )
                     let failed = 1
                 endif
             endif
@@ -70,47 +68,51 @@ function ex#buffer#is_registered_buffer ( bufname ) " <<<
 endfunction
 
 " ex#buffer#record {{{2
-let s:last_edit_bufnr = -1
-let s:last_edit_bufpos = []
+let s:alt_edit_bufnr = -1
+let s:alt_edit_bufpos = []
 
 function ex#buffer#record()
     let bufnr = bufnr('%')
     if buflisted(bufnr) 
                 \ && bufloaded(bufnr)
                 \ && !ex#buffer#is_registered_buffer(bufname('%'))
-        let s:last_edit_bufnr = bufnr
-        let s:last_edit_bufpos = getpos('.')
+        let s:alt_edit_bufnr = bufnr
+        let s:alt_edit_bufpos = getpos('.')
     endif
 endfunction
 
-" ex#buffer#swap_to_last_edit_buffer() {{{2
-function ex#buffer#swap_to_last_edit_buffer() " <<<
+" ex#buffer#to_alternate_edit_buf() {{{2
+" this function will swap current buffer with alternate buffer ('aka. #') 
+" it will prevent swap in plugin window, and will restore the cursor position
+" after swap.
+function ex#buffer#to_alternate_edit_buf() " <<<
     " check if current buffer can use swap
     if ex#window#is_plugin_window()
         call ex#warning('Swap buffer in plugin window is not allowed!')
         return
     endif
 
-    " check if last_edit buffer is valid for swap
-    if bufexists(s:last_edit_bufnr)
-                \ && buflisted(s:last_edit_bufnr) 
-                \ && bufloaded(s:last_edit_bufnr) 
-        silent exec s:last_edit_bufnr."b!"
-        silent call setpos('.',s:last_edit_bufpos)
-        return
-    endif
-
     " check if we can use alternate buffer '#' for swap
-    let last_bufnr = bufnr("#")
-    if bufexists(last_bufnr) 
-                \ && buflisted(last_bufnr) 
-                \ && bufloaded(last_bufnr) 
-                \ && !ex#buffer#is_registered_buffer(bufname(last_bufnr))
-        silent exec last_bufnr."b!"
+    let alt_bufnr = bufnr("#")
+    if bufexists(alt_bufnr) 
+                \ && buflisted(alt_bufnr) 
+                \ && bufloaded(alt_bufnr) 
+                \ && !ex#buffer#is_registered_buffer(bufname(alt_bufnr))
+        " NOTE: because s:alt_edit_bufnr."b!" will invoke BufLeave event  
+        " and that will overwrite s:alt_edit_bufpos
+        let record_alt_bufpos = deepcopy(s:alt_edit_bufpos)
+        let record_alt_bufnr = s:alt_edit_bufnr
+        silent exec alt_bufnr."b!"
+
+        " only recover the pos when we record the write alt buffer pos 
+        if alt_bufnr == record_alt_bufnr
+            silent call setpos('.',record_alt_bufpos)
+        endif
+
         return
     endif
 
-    call ex#warning ( "Can't swap to buffer " . bufname(s:last_edit_bufnr) . ", buffer not listed."  )
+    call ex#warning ( "Can't swap to buffer " . fnamemodify(bufname(alt_bufnr),":p:t") . ", buffer not listed."  )
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:

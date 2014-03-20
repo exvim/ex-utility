@@ -30,16 +30,13 @@ endfunction
 
 function ex#keep_window_bd(stage) " <<<
     if a:stage == 1
-        " check it is plugin window, if yes, close it directly to prevent use \bd
-        " close, reopen will loose plugin ability problem
-        let cru_short_bufname = fnamemodify(bufname('%'),":p:t")
-
-        " TODO:
-        " if exUtility#IsRegisteredPluginBuffer(bufname('%')) 
-        "     silent exec 'close'
-        "     call exUtility#GotoEditBuffer()
-        "     return
-        " endif
+        " if you are in plugin window. close it directly.
+        " NOTE: if use \bd close a plugin window, when reopen will loose plugin ability problem
+        if ex#window#is_plugin_window()
+            silent exec 'close'
+            call ex#window#goto_edit_window()
+            return
+        endif
 
         "
         if !buflisted(winbufnr(0)) 
