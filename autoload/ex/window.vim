@@ -143,38 +143,53 @@ endfunction
 
 " ex#window#record {{{
 
-" function s:getNewWinID () 
-"     let s:ex_last_winID = s:ex_last_winID + 1
-"     return s:ex_last_winID
-" endfunction
+" NOTE: Vim's window is manage by winnr. however, winnr will change when
+" there's window closed. Basically, win sort the all exists window, and  
+" give them winnr by the created time. This is bad for locate window in 
+" the runtime. 
 
-" function s:getWinnrFromWinID (winID)
-"     let i = 1
-"     let winNumber = winnr("$")
-"     while i <= winNumber
-"         if getwinvar(i, "ex_winID") == a:winID
-"             return i
-"         endif
-"         let i = i + 1
-"     endwhile
-"     return -1
-" endfunction
+" NOTE: The WinEnter,BufWinEnter event will not invoke when you do it 
+" from script. That's why I don't init w:ex_winid when WinEnter
 
-" function s:getBufnrFromWinID (winID)
-"     return winbufnr(s:getWinnrFromWinID(winID))
-" endfunction
+" What we do is when window leaving, give it a w:ex_winid 
+" that holds a unique id.
+
+let s:last_editbuf_winid = -1
+let s:last_editplugin_bufnr = -1
+let s:winid_generator = 0
+
+function s:new_winid () 
+    let s:winid_generator = s:winid_generator + 1
+    return s:winid_generator
+endfunction
+
+function s:winid2nr (winid)
+    let i = 1
+    let winnr = winnr("$")
+    while i <= winnr
+        if getwinvar(i, "ex_winid") == a:winid
+            return i
+        endif
+        let i = i + 1
+    endwhile
+    return -1
+endfunction
 
 function ex#window#record()
-    " TODO
-    " let short_bufname = fnamemodify(bufname('%'),":p:t")
-    " if !exUtility#IsRegisteredPluginBuffer(bufname('%'))
-    "     if getwinvar(0, "ex_winID") == ""
-    "         let w:ex_winID = s:getNewWinID()
-    "     endif
-    "     let s:ex_edit_winID = w:ex_winID
-    " else
-    "     let s:ex_pluginbuf_num = bufnr('%')
-    " endif
+    if getwinvar(0, "ex_winid") == ""
+        let w:ex_winid = s:new_winid()
+    endif
+
+    if ex#buffer#is_registered_buffer(bufname('%'))
+        let s:last_editplugin_bufnr = bufnr('%')
+    else
+        let s:last_editbuf_winid = w:ex_winid
+    endif
+endfunction
+
+" ex#window#last_edit_bufnr {{{
+function ex#window#last_edit_bufnr()
+    return winbufnr(s:winid2nr(s:last_editbuf_winid))
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:

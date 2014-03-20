@@ -71,15 +71,48 @@ function ex#buffer#is_registered_buffer ( bufname ) " <<<
     return 0
 endfunction
 
-" ex#buffer#record {{{
+" ex#buffer#record {{{2
+let s:last_edit_bufnr = -1
+let s:last_edit_bufpos = []
+
 function ex#buffer#record()
-    " TODO
-    " let bufnr = bufnr('%')
-    " let short_bufname = fnamemodify(bufname(bufnr),":p:t")
-    " if buflisted(bufnr) && bufloaded(bufnr) && bufexists(bufnr) && !exUtility#IsRegisteredPluginBuffer(bufname('%'))
-    "     let s:ex_swap_buf_num = bufnr
-    "     let s:ex_swap_buf_pos = getpos('.')
-    " endif
+    let bufnr = bufnr('%')
+    if buflisted(bufnr) 
+                \ && bufloaded(bufnr)
+                \ && !ex#buffer#is_registered_buffer(bufname('%'))
+        let s:last_edit_bufnr = bufnr
+        let s:last_edit_bufpos = getpos('.')
+    endif
+endfunction
+
+" ex#buffer#swap_to_last_edit_buffer() {{{2
+function ex#buffer#swap_to_last_edit_buffer() " <<<
+    " check if current buffer can use swap
+    if ex#buffer#is_registered_buffer(bufname('%'))
+        call ex#warning('Swap buffer in plugin window is not allowed!')
+        return
+    endif
+
+    " check if last_edit buffer is valid for swap
+    if bufexists(s:last_edit_bufnr)
+                \ && buflisted(s:last_edit_bufnr) 
+                \ && bufloaded(s:last_edit_bufnr) 
+        silent exec s:last_edit_bufnr."b!"
+        silent call setpos('.',s:last_edit_bufpos)
+        return
+    endif
+
+    " check if we can use alternate buffer '#' for swap
+    let last_bufnr = bufnr("#")
+    if bufexists(last_bufnr) 
+                \ && buflisted(last_bufnr) 
+                \ && bufloaded(last_bufnr) 
+                \ && !ex#buffer#is_registered_buffer(bufname(last_bufnr))
+        silent exec last_bufnr."b!"
+        return
+    endif
+
+    call ex#warning ( "Can't swap to buffer " . bufname(s:last_edit_bufnr) . ", buffer not listed."  )
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
