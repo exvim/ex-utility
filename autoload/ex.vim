@@ -31,7 +31,7 @@ function ex#debug(msg)
 endfunction
 
 
-" ex#register_plugin {{{2
+" ex#register_plugin {{{1
 
 " registered plugin used in exVim to make sure the current buffer is a
 " plugin buffer.
@@ -96,7 +96,7 @@ function ex#register_plugin ( filetype, options )
     endif
 endfunction
 
-" ex#is_registered_plugin {{{2
+" ex#is_registered_plugin {{{1
 function ex#is_registered_plugin ( bufname )
     " if the buf didn't exists, don't do anything else
     if !bufexists(a:bufname)

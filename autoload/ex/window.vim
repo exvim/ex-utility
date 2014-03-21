@@ -5,32 +5,30 @@
 " nested: 0 or 1. if nested, the window will be created besides current window 
 
 function ex#window#new( bufname, size, pos, nested, callback )
-    let winpos = ""
+    let winpos = ''
     if a:nested == 1
-        if a:pos == "left" || a:pos == "top"
-            let winpos = "leftabove"
-        elseif a:pos == "right" || a:pos == "bottom"
-            let winpos = "rightbelow"
+        if a:pos == 'left' || a:pos == 'top'
+            let winpos = 'leftabove'
+        elseif a:pos == 'right' || a:pos == 'bottom'
+            let winpos = 'rightbelow'
         endif
     else
-        if a:pos == "left" || a:pos == "top"
-            let winpos = "topleft"
-        elseif a:pos == "right" || a:pos == "bottom"
-            let winpos = "botright"
+        if a:pos == 'left' || a:pos == 'top'
+            let winpos = 'topleft'
+        elseif a:pos == 'right' || a:pos == 'bottom'
+            let winpos = 'botright'
         endif
     end
 
-    let vcmd = ""
-    if a:pos == "left"
-        let vcmd = "vertical"
-    elseif a:pos == "right"
-        let vcmd = "vertical"
+    let vcmd = ''
+    if a:pos == 'left' || a:pos == 'right'
+        let vcmd = 'vertical'
     endif
 
     " If the buffer already exists, reuse it.
     " Otherwise create a new buffer
     let bufnum = bufnr(a:bufname)
-    let bufcmd = ""
+    let bufcmd = ''
     if bufnum == -1
         " Create a new buffer
         let bufcmd = a:bufname
@@ -124,21 +122,15 @@ function ex#window#close(winnr)
 endfunction
 
 " ex#window#resize {{{
-function ex#window#resize( winnr, position, nested, size )
-    " TODO:
-    " if a:use_vertical
-    "     let new_size = a:original_size
-    "     if winwidth('.') <= a:original_size
-    "         let new_size = a:original_size + a:increase_size
-    "     endif
-    "     silent exe 'vertical resize ' . new_size
-    " else
-    "     let new_size = a:original_size
-    "     if winheight('.') <= a:original_size
-    "         let new_size = a:original_size + a:increase_size
-    "     endif
-    "     silent exe 'resize ' . new_size
-    " endif
+function ex#window#resize( winnr, pos, new_size )
+    let vcmd = ''
+    if a:pos == 'left' || a:pos == 'right'
+        let vcmd = 'vertical'
+    endif
+
+    " jump to the window
+    exe a:winnr . 'wincmd w'
+    silent exe vcmd . ' resize ' . a:new_size
 endfunction
 
 " ex#window#record {{{
@@ -176,9 +168,9 @@ function s:winid2nr (winid)
     endif
 
     let i = 1
-    let winnr = winnr("$")
+    let winnr = winnr('$')
     while i <= winnr
-        if getwinvar(i, "ex_winid") == a:winid
+        if getwinvar(i, 'ex_winid') == a:winid
             return i
         endif
         let i = i + 1
@@ -187,7 +179,7 @@ function s:winid2nr (winid)
 endfunction
 
 function ex#window#record()
-    if getwinvar(0, "ex_winid") == ""
+    if getwinvar(0, 'ex_winid') == ''
         let w:ex_winid = s:new_winid()
     endif
 
