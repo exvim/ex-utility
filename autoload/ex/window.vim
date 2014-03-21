@@ -200,7 +200,7 @@ endfunction
 
 " ex#window#is_plugin_window {{{
 function ex#window#is_plugin_window()
-    return ex#buffer#is_registered_buffer(bufname('%'))
+    return ex#is_registered_plugin(bufname('%'))
 endfunction
 
 " ex#window#last_edit_bufnr {{{
