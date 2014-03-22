@@ -14,20 +14,20 @@ be installed with a variety of plugin managers:
 To install using [Vundle](https://github.com/gmarik/vundle):
 
     # add this line to your .vimrc file
-    Bundle 'exvim/ex_utility'
+    Bundle 'exvim/ex-utility'
 
 To install using [Pathogen](https://github.com/tpope/vim-pathogen):
 
     cd ~/.vim/bundle
-    git clone https://github.com/exvim/ex_utility
+    git clone https://github.com/exvim/ex-utility
 
 To install using [NeoBundle](https://github.com/Shougo/neobundle.vim):
 
     # add this line to your .vimrc file
-    NeoBundle 'exvim/ex_utility'
+    NeoBundle 'exvim/ex-utility'
 
-[Download zip file](https://github.com/exvim/ex_utility/archive/master.zip):
+[Download zip file](https://github.com/exvim/ex-utility/archive/master.zip):
 
     cd ~/.vim
-    unzip ex_utility-master.zip
+    unzip ex-utility-master.zip
     copy all of the files into your ~/.vim directory
