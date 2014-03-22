@@ -18,7 +18,7 @@ function ex#buffer#record()
     let bufnr = bufnr('%')
     if buflisted(bufnr) 
                 \ && bufloaded(bufnr)
-                \ && !ex#is_registered_plugin(bufname('%'))
+                \ && !ex#is_registered_plugin(bufnr('%'))
         let s:alt_edit_bufnr = bufnr
         let s:alt_edit_bufpos = getpos('.')
     endif
@@ -40,7 +40,7 @@ function ex#buffer#to_alternate_edit_buf() " <<<
     if bufexists(alt_bufnr) 
                 \ && buflisted(alt_bufnr) 
                 \ && bufloaded(alt_bufnr) 
-                \ && !ex#is_registered_plugin(bufname(alt_bufnr))
+                \ && !ex#is_registered_plugin(bufnr(alt_bufnr))
         " NOTE: because s:alt_edit_bufnr."b!" will invoke BufLeave event  
         " and that will overwrite s:alt_edit_bufpos
         let record_alt_bufpos = deepcopy(s:alt_edit_bufpos)

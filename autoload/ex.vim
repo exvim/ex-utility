@@ -97,14 +97,14 @@ function ex#register_plugin ( filetype, options )
 endfunction
 
 " ex#is_registered_plugin {{{1
-function ex#is_registered_plugin ( bufname )
+function ex#is_registered_plugin ( bufnr )
     " if the buf didn't exists, don't do anything else
-    if !bufexists(a:bufname)
+    if !bufexists(a:bufnr)
         return 0
     endif
 
-    let bufnr = bufnr(a:bufname) 
-    let filetype = getbufvar( bufnr, '&filetype' )
+    let bufname = bufname(a:bufnr)
+    let filetype = getbufvar( a:bufnr, '&filetype' )
 
     " if this is not empty filetype, use regular rules for buffer checking
     if filetype == ''
@@ -129,11 +129,11 @@ function ex#is_registered_plugin ( bufname )
 
         for [key, value] in items(ruledict) 
             if key ==# "bufname"
-                if match( a:bufname, value ) == -1
+                if match( bufname, value ) == -1
                     let failed = 1
                 endif
             else
-                let bufoption = getbufvar( bufnr, '&'.key )
+                let bufoption = getbufvar( a:bufnr, '&'.key )
                 if bufoption !=# value 
                     let failed = 1
                 endif
