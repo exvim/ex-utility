@@ -183,7 +183,7 @@ function ex#window#record()
         let w:ex_winid = s:new_winid()
     endif
 
-    if ex#window#is_plugin_window()
+    if ex#window#is_plugin_window(winnr())
         let s:last_editplugin_bufnr = bufnr('%')
     else
         let s:last_editbuf_winid = w:ex_winid
@@ -191,8 +191,8 @@ function ex#window#record()
 endfunction
 
 " ex#window#is_plugin_window {{{
-function ex#window#is_plugin_window()
-    return ex#is_registered_plugin(bufnr('%'))
+function ex#window#is_plugin_window( winnr )
+    return ex#is_registered_plugin(winbufnr(a:winnr))
 endfunction
 
 " ex#window#last_edit_bufnr {{{
@@ -224,7 +224,7 @@ endfunction
 
 " ex#window#switch_window {{{
 function ex#window#switch_window()
-    if ex#window#is_plugin_window()
+    if ex#window#is_plugin_window(winnr())
         call ex#window#goto_edit_window()
     else
         call ex#window#goto_plugin_window()
