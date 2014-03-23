@@ -190,6 +190,13 @@ function ex#window#record()
     endif
 endfunction
 
+" DEBUG
+function ex#window#debug () 
+    echomsg "last edit window id = " . s:last_editbuf_winid
+    echomsg "last edit buffer = " . bufname(ex#window#last_edit_bufnr())
+    echomsg "last edit plugin = " . bufname(s:last_editplugin_bufnr)
+endfunction
+
 " ex#window#is_plugin_window {{{
 function ex#window#is_plugin_window( winnr )
     return ex#is_registered_plugin(winbufnr(a:winnr))
@@ -208,8 +215,11 @@ function ex#window#goto_edit_window()
     " if we have edit window opened, jump to it
     " if something wrong make you delete the edit window (such as :q)
     " we will split a new one and go to it.
-    if winnr != -1 && winnr() != winnr
-        exe winnr . 'wincmd w'
+    if winnr != -1 
+        " no need to jump if we already here
+        if winnr() != winnr
+            exe winnr . 'wincmd w'
+        endif
     else
         exec 'rightbelow vsplit' 
     endif

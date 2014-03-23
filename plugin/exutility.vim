@@ -22,23 +22,4 @@ augroup ex_utility
 augroup END
 " }}}1
 
-" register Vim builtin window
-silent call ex#register_plugin( 'help', { 'buftype': 'help' } )
-silent call ex#register_plugin( 'qf', { 'buftype': 'quickfix' } )
-" register ex-plugins
-silent call ex#register_plugin( 'explugin', {} )
-silent call ex#register_plugin( 'exproject', {} )
-" register 3rd-plugins
-silent call ex#register_plugin( 'minibufexpl', { 'bufname': '-MiniBufExplorer-', 'buftype': 'nofile' } )
-silent call ex#register_plugin( 'taglist', { 'bufname': '__Tag_List__', 'buftype': 'nofile' } )
-silent call ex#register_plugin( 'tagbar', { 'bufname': '__TagBar__', 'buftype': 'nofile' } )
-silent call ex#register_plugin( 'nerdtree', { 'bufname': 'NERD_tree_\d\+', 'buftype': 'nofile' } )
-silent call ex#register_plugin( 'undotree', { 'bufname': 'undotree_\d\+', 'buftype': 'nowrite' } )
-silent call ex#register_plugin( 'diff', { 'bufname': 'diffpanel_\d\+', 'buftype': 'nowrite' } )
-silent call ex#register_plugin( 'gitcommit', {} )
-silent call ex#register_plugin( 'gundo', {} )
-silent call ex#register_plugin( 'vimfiler', {} )
-" register empty filetype 
-silent call ex#register_plugin( '__EMPTY__', { 'bufname': '-MiniBufExplorer-' } )
-
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
