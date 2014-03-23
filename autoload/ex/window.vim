@@ -205,10 +205,13 @@ function ex#window#goto_edit_window()
     " get winnr from winid
     let winnr = s:winid2nr(s:last_editbuf_winid)
 
-    " this will fix the jump error in the vimentry buffer, 
-    " cause the winnr for vimentry buffer is -1
+    " if we have edit window opened, jump to it
+    " if something wrong make you delete the edit window (such as :q)
+    " we will split a new one and go to it.
     if winnr != -1 && winnr() != winnr
         exe winnr . 'wincmd w'
+    else
+        exec 'rightbelow vsplit' 
     endif
 endfunction
 
