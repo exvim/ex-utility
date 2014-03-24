@@ -117,8 +117,7 @@ function ex#window#close(winnr)
 
     " go back to edit buffer
     call ex#window#goto_edit_window()
-    " TODO: call exUtility#ClearObjectHighlight()
-
+    call ex#hl#clear_target()
 endfunction
 
 " ex#window#resize {{{
