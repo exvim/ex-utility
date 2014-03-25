@@ -30,6 +30,17 @@ function ex#debug(msg)
     silent echohl None
 endfunction
 
+" ex#short_message {{{1
+" short the msg 
+function ex#short_message( msg ) " <<<
+   if len( a:msg ) <= &columns-13
+       return a:msg
+   endif
+
+   let len = (&columns - 13 - 3) / 2
+   return a:msg[:len] . "..." . a:msg[ (-len):] 
+endfunction
+
 " ex#register_plugin {{{1
 
 " registered plugin used in exVim to make sure the current buffer is a
