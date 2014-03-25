@@ -30,7 +30,6 @@ function ex#debug(msg)
     silent echohl None
 endfunction
 
-
 " ex#register_plugin {{{1
 
 " registered plugin used in exVim to make sure the current buffer is a
@@ -151,6 +150,21 @@ function ex#is_registered_plugin ( bufnr )
     endfor 
 
     return 0
+endfunction
+
+" ex#is_osx {{{1
+function ex#is_osx()
+    return has('macunix')
+endfunction
+
+" ex#is_linux {{{1
+function ex#is_linux()
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+
+" ex#is_windows {{{1
+function ex#is_windows()
+    return  (has('win16') || has('win32') || has('win64'))
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
