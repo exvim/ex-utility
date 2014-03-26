@@ -20,8 +20,9 @@ function ex#os#open( path )
         silent exec '!open ' . a:path
         call ex#hint('open ' . a:path)
     elseif ex#os#is('windows')
-        silent exec '!explore ' . a:path
-        call ex#hint('explore ' . a:path)
+        let winpath = ex#path#translate(a:path,'windows')
+        silent exec '!explorer ' . winpath
+        call ex#hint('explorer ' . winpath)
     else
         call ex#warning( 'File borwser not support in Linux' )
     endif
