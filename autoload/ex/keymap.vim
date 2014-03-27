@@ -56,7 +56,7 @@ function ex#keymap#helptext( keymap )
     " pre-check
     if type(a:keymap) != type({}) 
         call ex#error( "Wrong a:keymap type, please send a Dictionary" )
-        return
+        return []
     endif
 
     let mappings = values(a:keymap)
@@ -64,8 +64,9 @@ function ex#keymap#helptext( keymap )
 
     let text = []
     for m in mappings
-        silent call add( text, m.key . ': ' . m.desc )
+        silent call add( text, '" ' . m.key . ': ' . m.desc )
     endfor
+    silent call add( text, '' )
     return text
 endfunction
 
