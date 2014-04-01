@@ -138,10 +138,12 @@ function ex#is_registered_plugin ( bufnr )
         let failed = 0
 
         for [key, value] in items(ruledict) 
-            if key ==# "bufname"
+            if key ==# 'bufname'
                 if match( bufname, value ) == -1
                     let failed = 1
                 endif
+            elseif key ==# 'autoclose'
+                " skip this key
             else
                 let bufoption = getbufvar( a:bufnr, '&'.key )
                 if bufoption !=# value 
