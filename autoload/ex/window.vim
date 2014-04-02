@@ -206,6 +206,17 @@ function ex#window#last_edit_bufnr()
     return winbufnr(s:winid2nr(s:last_editbuf_winid))
 endfunction
 
+" ex#window#check_if_autoclose {{{
+function ex#window#check_if_autoclose( winnr )
+    let bufopts = []
+    if ex#is_registered_plugin( winbufnr(a:winnr), bufopts )
+        if index( bufopts, 'autoclose' ) != -1
+            return 1
+        endif
+    endif
+    return 0
+endfunction
+
 " ex#window#goto_edit_window {{{
 function ex#window#goto_edit_window()
     " get winnr from winid

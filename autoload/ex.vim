@@ -107,7 +107,7 @@ function ex#register_plugin ( filetype, options )
 endfunction
 
 " ex#is_registered_plugin {{{1
-function ex#is_registered_plugin ( bufnr )
+function ex#is_registered_plugin ( bufnr, ... )
     " if the buf didn't exists, don't do anything else
     if !bufexists(a:bufnr)
         return 0
@@ -138,20 +138,27 @@ function ex#is_registered_plugin ( bufnr )
         let failed = 0
 
         for [key, value] in items(ruledict) 
+            " check bufname
             if key ==# 'bufname'
                 if match( bufname, value ) == -1
                     let failed = 1
+                    break
                 endif
-            elseif key ==# 'autoclose'
-                " skip this key
-            else
-                let bufoption = getbufvar( a:bufnr, '&'.key )
-                if bufoption !=# value 
-                    let failed = 1
-                endif
+                continue
             endif
 
-            if failed == 1
+            " skip autoclose
+            if key ==# 'actions'
+                if a:0 > 0
+                    silent call extend( a:1, value )
+                endif
+                continue
+            endif
+
+            " check other option
+            let bufoption = getbufvar( a:bufnr, '&'.key )
+            if bufoption !=# value 
+                let failed = 1
                 break
             endif
         endfor
