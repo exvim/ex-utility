@@ -31,7 +31,7 @@ function ex#window#new( bufname, size, pos, nested, callback )
     let bufcmd = ''
     if bufnum == -1
         " Create a new buffer
-        let bufcmd = a:bufname
+        let bufcmd = fnameescape(a:bufname)
     else
         " Edit exists buffer
         " NOTE: '+' here is to make it work with other command 
