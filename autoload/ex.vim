@@ -137,13 +137,21 @@ function ex#is_registered_plugin ( bufnr, ... )
     for ruledict in rules 
         let failed = 0
 
-        for [key, value] in items(ruledict) 
+        for key in keys(ruledict) 
+            " NOTE: this is because the value here can be list or string, if
+            " we don't unlet it, it will lead to E706 
+            if exists('l:value')
+                unlet value
+            endif
+            let value = ruledict[key] 
+
             " check bufname
             if key ==# 'bufname'
                 if match( bufname, value ) == -1
                     let failed = 1
                     break
                 endif
+
                 continue
             endif
 
