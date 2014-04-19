@@ -32,7 +32,7 @@ endfunction
 
 " ex#short_message {{{1
 " short the msg 
-function ex#short_message( msg ) " <<<
+function ex#short_message( msg )
    if len( a:msg ) <= &columns-13
        return a:msg
    endif
@@ -178,6 +178,36 @@ function ex#is_registered_plugin ( bufnr, ... )
     endfor 
 
     return 0
+endfunction
+
+" ex#set_symbol_path {{{1
+function ex#set_symbol_path( path )
+    let s:symbols_file = a:path
+endfunction
+
+" ex#compl_by_symbol {{{1
+function ex#compl_by_symbol( arg_lead, cmd_line, cursor_pos )
+    if !exists ('s:symbols_file') || findfile(s:symbols_file) == '' 
+        return
+    endif
+
+    let filter_tag = []
+    let tags = readfile( s:symbols_file )
+
+    for tag in tags
+        let pattern = '^'.a:arg_lead.'.*'
+
+        if match(pattern, '\u') != -1 " if we have upper case, use case compare
+            let result = match ( tag, '\C'.pattern )
+        else " ignore case compare
+            let result = match ( tag, pattern )
+        endif 
+
+        if result != -1
+            silent call add ( filter_tag, tag )
+        endif
+    endfor
+    return filter_tag
 endfunction
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
