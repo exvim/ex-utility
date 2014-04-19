@@ -114,10 +114,6 @@ function ex#window#close(winnr)
     catch /E444:/
         call ex#warning( 'Can not close last window' )
     endtry
-
-    " go back to edit buffer
-    call ex#window#goto_edit_window()
-    call ex#hl#clear_target()
 endfunction
 
 " ex#window#resize {{{
