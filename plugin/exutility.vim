@@ -29,4 +29,10 @@ augroup ex_utility
 augroup END
 " }}}1
 
+" ex#register_plugin register plugins {{{
+" register Vim builtin window
+call ex#register_plugin( 'help', { 'buftype': 'help' } )
+call ex#register_plugin( 'qf', { 'buftype': 'quickfix' } )
+" }}}
+
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
