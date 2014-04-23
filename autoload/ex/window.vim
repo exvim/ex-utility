@@ -215,19 +215,46 @@ endfunction
 
 " ex#window#goto_edit_window {{{
 function ex#window#goto_edit_window()
+    " if current window is edit_window, don't do anything
+    let winnr = winnr()
+    if !ex#window#is_plugin_window(winnr)
+        return
+    endif
+
+
     " get winnr from winid
     let winnr = s:winid2nr(s:last_editbuf_winid)
 
     " if we have edit window opened, jump to it
     " if something wrong make you delete the edit window (such as :q)
-    " we will split a new one and go to it.
+    " we will try to search another edit window, 
+    " if no edit window exists, we will split a new one and go to it.
     if winnr != -1 
         " no need to jump if we already here
         if winnr() != winnr
             exe winnr . 'wincmd w'
         endif
     else
+        " search if we have other edit window
+        let i = 1
+        let winCounts = winnr('$')
+        while i <= winCounts
+            if !ex#window#is_plugin_window(i)
+                exe i . 'wincmd w'
+                return
+            endif
+            let i = i + 1
+        endwhile
+
+        " split a new one and go to it 
         exec 'rightbelow vsplit' 
+        exec 'enew' 
+        let newBuf = bufnr('%') 
+        set buflisted 
+        set bufhidden=delete 
+        set buftype=nofile 
+        setlocal noswapfile 
+        normal athis is the scratch buffer 
     endif
 endfunction
 

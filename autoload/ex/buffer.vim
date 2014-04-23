@@ -83,7 +83,7 @@ endfunction
 " Delete the buffer; keep windows; create a scratch buffer if no buffers left 
 " Reference: VimTip #1119: How to use Vim like an IDE
 
-function ex#buffer#keep_window_bd() " <<<
+function ex#buffer#keep_window_bd()
     " don't do anything, if we are in plugin window
     if ex#window#is_plugin_window(winnr())
         call ex#warning("Can't close plugin window by <Leader>bd")
