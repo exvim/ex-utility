@@ -98,6 +98,12 @@ function ex#buffer#keep_window_bd()
         return
     endif
 
+    " if the buffer didn't saved, warning it and return
+    if getbufvar('%','&mod')
+        call ex#warning("Can not close: The buffer is unsaved.")
+        return
+    endif
+
     " get current buffer and window
     let bd_bufnr = bufnr('%') 
     let cur_winnr = winnr() 
