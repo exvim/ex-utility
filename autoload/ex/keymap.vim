@@ -16,7 +16,7 @@ endfunction
 " key: the key in Vim's key format string
 " action: the action function name
 " desc: description
-function ex#keymap#register( keymap, priority, key, action, desc )
+function ex#keymap#register( keymap, priority, local, key, action, desc )
     " pre-check
     if type(a:keymap) != type({}) 
         call ex#error( "Wrong a:keymap type, please send a Dictionary" )
@@ -25,11 +25,19 @@ function ex#keymap#register( keymap, priority, key, action, desc )
 
     " get key-mappings
     let a:keymap[a:key] = {
+                \ 'priority': a:priority,
+                \ 'local': a:local,
                 \ 'key': a:key,
                 \ 'action': a:action,
-                \ 'priority': a:priority,
                 \ 'desc': a:desc,
                 \ }
+
+    " immediately map non-local mappings
+    if a:local == 0
+        silent exec 'nnoremap <unique> '
+                    \ . a:key . ' ' 
+                    \ . a:action
+    endif
 endfunction
 
 " ex#keymap#bind {{{
@@ -44,9 +52,11 @@ function ex#keymap#bind( keymap )
     call sort( mappings, function('s:sort_mappings') )
 
     for m in mappings
-        silent exec 'nnoremap <silent> <buffer> '
-                    \ . m.key 
-                    \ . ' ' . m.action
+        if m.local 
+            silent exec 'nnoremap <silent> <buffer> '
+                        \ . m.key . ' ' 
+                        \ . m.action
+        endif
     endfor
 endfunction
 
