@@ -41,33 +41,13 @@ function ex#window#new( bufname, size, pos, nested, callback )
     " Create the ex_window
     silent exe winpos . ' ' . vcmd . ' ' . a:size . ' split ' .  bufcmd
 
-    " init window after window craeted
-
-    " TODO: Register bufname
-    " " after create the window, record the bufname into the plugin buffer name list
-    " let short_bufname = fnamemodify(a:buffer_name,":p:t")
-    " if index( g:ex_plugin_registered_bufnames, short_bufname ) == -1
-    "     silent call add( g:ex_plugin_registered_bufnames, short_bufname )
-    " endif
-
-    " " record the filetype into the plugin filetype list
-    " let buf_filetype = getbufvar(a:buffer_name,'&filetype')
-    " if index( g:ex_plugin_registered_filetypes, buf_filetype ) == -1
-    "     silent call add( g:ex_plugin_registered_filetypes, buf_filetype )
-    " endif
+    " init window 
 
     " the winfix height width will let plugin-window not join into the <c-w>= operations
     silent setlocal winfixheight
     silent setlocal winfixwidth
 
     call a:callback()
-
-    " TODO: do we need this??
-    " " avoid cwd change problem
-    " if exists( 'g:exES_CWD' )
-    "     au BufEnter * silent exec 'lcd ' . escape(g:exES_CWD, " ")
-    " endif
-
 endfunction
 
 " ex#window#open {{{
