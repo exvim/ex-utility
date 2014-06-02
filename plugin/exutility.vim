@@ -16,7 +16,8 @@ command! EXbp call ex#buffer#navigate('bp')
 command! EXbalt call ex#buffer#to_alternate_edit_buf()
 command! EXbd call ex#buffer#keep_window_bd()
 
-command! EXwp call ex#window#switch_window()
+command! EXsw call ex#window#switch_window()
+command! EXgp call ex#window#goto_plugin_window()
 
 command! EXplugins call ex#echo_registered_plugins()
 " }}}1
