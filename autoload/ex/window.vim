@@ -108,6 +108,31 @@ function ex#window#resize( winnr, pos, new_size )
     silent exe vcmd . ' resize ' . a:new_size
 endfunction
 
+function ex#window#operate( winnum, close_when_selected, backto_edibut, hl_obj_line ) " <<<
+    if a:close_when_selected
+        call ex#window#close(a:winnum)
+        call ex#window#goto_edit_window()
+    else
+        " go back to edit buffer first
+        call ex#window#goto_edit_window()
+
+        " highlight object line when 
+        " 1: we not close selected window 
+        " 2: if we needed
+        if a:hl_obj_line
+            call ex#hl#object_line()
+            exe 'normal! zz'
+        endif
+
+        " if not back to edit buffer, we jump back to specificed window
+        if !a:backto_edibut
+            if winnr() != a:winnum
+                exe a:winnum . 'wincmd w'
+            endif
+        endif
+    endif
+endfunction " >>>
+
 " ex#window#record {{{
 
 " NOTE: Vim's window is manage by winnr. however, winnr will change when

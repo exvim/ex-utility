@@ -30,12 +30,27 @@ endfunction
 
 " DISABLE
 " " ex#hl#select_line {{{
-" function ex#hl#select_line()
-"     " Clear previously selected name
-"     3match none
-"     " Highlight the current line
-"     let pat = '/\%' . line('.') . 'l.*/'
-"     exe '3match ex_SynSelectLine ' . pat
-" endfunction
+function ex#hl#select_line()
+    " Clear previously selected name
+    2match none
+    " Highlight the current line
+    let pat = '/\%' . line('.') . 'l.*/'
+    " exe '3match exSynSelectLine ' . pat
+    exe '2match exTargetLine ' . pat
+endfunction
+
+function ex#hl#object_line() " <<<
+    " Clear previously selected name
+    3match none
+    " Highlight the current line
+    let pat = '/\%' . line('.') . 'l.*/'
+    " exe '3match exSynObjectLine ' . pat
+    exe '3match exTargetLine ' . pat
+endfunction " >>>
+
+function ex#hl#clear_object() " <<<
+    " Clear previously selected name
+    3match none
+endfunction " >>>
 
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
