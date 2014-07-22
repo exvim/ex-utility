@@ -210,4 +210,57 @@ function ex#compl_by_symbol( arg_lead, cmd_line, cursor_pos )
     return filter_tag
 endfunction
 
+" ex#set_restore_info {{{1
+let s:restore_info = './restore_info'
+function ex#set_restore_info(path)
+    let s:restore_info = a:path
+endfunction
+
+" ex#restore_lasteditbuffers {{{1
+function ex#restore_lasteditbuffers()
+    if findfile(s:restore_info) != '' 
+        call ex#window#goto_edit_window()
+        let cmdlist = readfile(s:restore_info)
+
+        " load all buffers
+        for cmd in cmdlist 
+            if 0 == stridx(cmd, "badd") || 0 == stridx(cmd, "edit") || 0 == stridx(cmd, "call")
+                silent exec cmd 
+            endif
+        endfor
+
+        " go to last edit buffer
+        call ex#window#goto_edit_window()
+        doautocmd BufNewFile,BufRead,BufEnter,BufWinEnter
+    endif
+endfunction
+
+" ex#save_restore_info {{{1
+function ex#save_restore_info()
+    let nb_buffers = bufnr('$')     " Get the number of the last buffer.
+    let idx = 1                     " Set the buffer index to one, NOTE: zero is represent to last edit buffer.
+    let cmdlist = []
+
+    " store listed buffers
+    while idx <= nb_buffers
+        if getbufvar( idx, '&buflisted') == 1
+            silent call add ( cmdlist, "badd " . bufname(idx) )
+        endif
+        let idx += 1
+    endwhile
+
+    " save the last edit buffer detail info
+    " call exUtility#GotoEditBuffer()
+    call ex#window#goto_edit_window()
+    let last_buf_nr = bufnr('%')
+    if getbufvar( last_buf_nr, '&buflisted') == 1
+        " load last edit buffer
+        silent call add ( cmdlist, "edit " . bufname(last_buf_nr) )
+        let save_cursor = getpos(".")
+        silent call add ( cmdlist, "call cursor(" . save_cursor[1] . "," . save_cursor[2] . ")" )
+        "
+        call writefile( cmdlist, s:restore_info)
+    endif
+endfunction
+
 " vim:ts=4:sw=4:sts=4 et fdm=marker:
