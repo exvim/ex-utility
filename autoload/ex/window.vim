@@ -158,8 +158,13 @@ function ex#window#record()
         let w:ex_winid = s:new_winid()
     endif
 
-    if ex#window#is_plugin_window(winnr())
-        let s:last_editplugin_bufnr = bufnr('%')
+    let winnr = winnr()
+    let bufopts = []
+    " if this is plugin window and do not have {action: norecord} 
+    if ex#is_registered_plugin( winbufnr(winnr), bufopts )
+        if index( bufopts, 'norecord' ) == -1
+            let s:last_editplugin_bufnr = bufnr('%')
+        endif
     else
         let s:last_editbuf_winid = w:ex_winid
     endif
