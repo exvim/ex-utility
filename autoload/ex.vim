@@ -224,15 +224,18 @@ function ex#restore_lasteditbuffers()
 
         " load all buffers
         for cmd in cmdlist 
-            if 0 == stridx(cmd, 'badd') || 0 == stridx(cmd, 'edit') || 0 == stridx(cmd, 'call')
+            if stridx(cmd, 'badd') == 0
+                let filename = strpart( cmd, 4 )
+                silent exec 'edit '.filename
+                doautocmd BufAdd,BufRead
+            elseif stridx(cmd, 'edit') == 0 || stridx(cmd, 'call') == 0
                 silent exec cmd 
             endif
         endfor
 
         " go to last edit buffer
-        call ex#window#goto_edit_window()
         if &filetype != 'vimentry'
-            doautocmd BufNewFile,BufRead,BufEnter,BufWinEnter
+            doautocmd BufRead,BufEnter,BufWinEnter
         endif
     endif
 endfunction
