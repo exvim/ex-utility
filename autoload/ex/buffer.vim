@@ -7,7 +7,11 @@ function ex#buffer#navigate(cmd)
         call ex#window#goto_edit_window()
     endif
 
-    silent exec a:cmd."!"
+    try
+        silent exec a:cmd."!"
+    catch /E85:/
+        call ex#warning( 'There is no listed buffer' )
+    endtry
 endfunction
 
 " ex#buffer#record {{{2
