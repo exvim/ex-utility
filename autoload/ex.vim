@@ -221,15 +221,26 @@ function ex#restore_lasteditbuffers()
     if findfile(s:restore_info) != '' 
         call ex#window#goto_edit_window()
         let cmdlist = readfile(s:restore_info)
+        let needJump = 0
 
         " load all buffers
         for cmd in cmdlist 
             if stridx(cmd, 'badd') == 0
                 let filename = strpart( cmd, 4 )
-                silent exec 'edit '.filename
-                doautocmd BufAdd,BufRead
-            elseif stridx(cmd, 'edit') == 0 || stridx(cmd, 'call') == 0
-                silent exec cmd 
+                if findfile(filename) != '' 
+                    silent exec 'edit '.filename
+                    doautocmd BufAdd,BufRead
+                endif
+            elseif stridx(cmd, 'edit') == 0 
+                let filename = strpart( cmd, 4 )
+                if findfile(filename) != '' 
+                    let needJump = 1
+                    silent exec cmd 
+                endif
+            elseif stridx(cmd, 'call') == 0 
+                if needJump != 0
+                    silent exec cmd 
+                endif
             endif
         endfor
 
