@@ -94,6 +94,9 @@ function ex#window#close(winnr)
     catch /E444:/
         call ex#warning( 'Can not close last window' )
     endtry
+
+    " this will help BufEnter event correctly happend when we enter the edit window 
+    doautocmd BufEnter
 endfunction
 
 " ex#window#resize {{{
